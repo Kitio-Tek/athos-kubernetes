@@ -108,7 +108,9 @@ jobs:
         run: go build -o bin/manager ./cmd/main.go
 
       - name: Build container image
-        run: docker build -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }} .
+        run: |
+          IMAGE_TAG=$(echo "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}" | tr '[:upper:]' '[:lower:]')
+          docker build -t "${IMAGE_TAG}" .
 
   e2e:
     name: E2E Tests

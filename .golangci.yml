@@ -7,8 +7,6 @@ issues:
   # don't exclude the default set of lint
   exclude-use-default: false
   max-same-issues: 0
-  # restore some of the defaults
-  # (fill in the rest as needed)
   exclude-rules:
     - path: "api/*"
       linters:
@@ -17,6 +15,16 @@ issues:
       linters:
         - dupl
         - lll
+    # kubebuilder marker comments use //+ without a trailing space; that is
+    # intentional and must not be flagged by comment-spacings.
+    - source: "^//\\+"
+      linters:
+        - revive
+    # Test files allow duplicate code and long lines.
+    - path: "_test\\.go"
+      linters:
+        - dupl
+        - goconst
 linters:
   disable-all: true
   enable:

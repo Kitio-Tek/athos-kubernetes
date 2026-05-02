@@ -93,19 +93,22 @@ func LabelChangedOrGeneration() predicate.Predicate {
 // the vigil.io/paused=true annotation. Controllers that honour the annotation
 // should use this predicate to skip reconciliation entirely.
 func NotPaused() predicate.Predicate {
-	const pausedAnnotation = "pg.vigil.io/paused"
+	const (
+		pausedAnnotation = "pg.vigil.io/paused"
+		pausedValue      = "true"
+	)
 	return predicate.Funcs{
 		UpdateFunc: func(e event.UpdateEvent) bool {
-			return e.ObjectNew.GetAnnotations()[pausedAnnotation] != "true"
+			return e.ObjectNew.GetAnnotations()[pausedAnnotation] != pausedValue
 		},
 		CreateFunc: func(e event.CreateEvent) bool {
-			return e.Object.GetAnnotations()[pausedAnnotation] != "true"
+			return e.Object.GetAnnotations()[pausedAnnotation] != pausedValue
 		},
 		DeleteFunc: func(e event.DeleteEvent) bool {
 			return true
 		},
 		GenericFunc: func(e event.GenericEvent) bool {
-			return e.Object.GetAnnotations()[pausedAnnotation] != "true"
+			return e.Object.GetAnnotations()[pausedAnnotation] != pausedValue
 		},
 	}
 }

@@ -22,8 +22,10 @@ import (
 	"github.com/Kitio-Tek/vigil-kubernetes/internal/postgres"
 )
 
+const testClusterName = "mycluster"
+
 func TestCommonLabels(t *testing.T) {
-	c := newTestCluster("mycluster")
+	c := newTestCluster(testClusterName)
 	labels := postgres.CommonLabels(c)
 
 	required := []string{
@@ -37,8 +39,8 @@ func TestCommonLabels(t *testing.T) {
 			t.Errorf("common labels missing key %q", k)
 		}
 	}
-	if labels[postgres.LabelCluster] != "mycluster" {
-		t.Errorf("LabelCluster = %q, want mycluster", labels[postgres.LabelCluster])
+	if labels[postgres.LabelCluster] != testClusterName {
+		t.Errorf("LabelCluster = %q, want %q", labels[postgres.LabelCluster], testClusterName)
 	}
 	if labels[postgres.LabelManagedBy] != postgres.OperatorName {
 		t.Errorf("LabelManagedBy = %q, want %q", labels[postgres.LabelManagedBy], postgres.OperatorName)
@@ -46,10 +48,10 @@ func TestCommonLabels(t *testing.T) {
 }
 
 func TestSelectorLabels(t *testing.T) {
-	c := newTestCluster("mycluster")
+	c := newTestCluster(testClusterName)
 	sel := postgres.SelectorLabels(c)
 
-	if sel[postgres.LabelCluster] != "mycluster" {
+	if sel[postgres.LabelCluster] != testClusterName {
 		t.Errorf("selector labels missing cluster name")
 	}
 	// Selector labels should be a subset of common labels.
@@ -62,7 +64,7 @@ func TestSelectorLabels(t *testing.T) {
 }
 
 func TestPodLabels(t *testing.T) {
-	c := newTestCluster("mycluster")
+	c := newTestCluster(testClusterName)
 
 	primary := postgres.PodLabels(c, postgres.RolePrimary)
 	if primary[postgres.LabelRole] != postgres.RolePrimary {
