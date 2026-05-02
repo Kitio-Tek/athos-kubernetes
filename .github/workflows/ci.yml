@@ -27,7 +27,7 @@ jobs:
       - name: Run golangci-lint
         uses: golangci/golangci-lint-action@v6
         with:
-          version: v1.59.1
+          version: v1.64.8
           args: --timeout 5m
 
   test:
@@ -46,20 +46,18 @@ jobs:
         run: go mod download
 
       - name: Run unit tests
-        run: go test ./internal/postgres/... -v -coverprofile=coverage-unit.out
+        run: go test ./internal/postgres/... ./internal/patcher/... ./internal/events/... ./internal/metrics/... ./internal/predicates/... ./internal/password/... ./internal/replication/... ./internal/ha/... ./internal/upgrade/... -v -coverprofile=coverage-unit.out
 
       - name: Install setup-envtest
-        run: |
-          go install sigs.k8s.io/controller-runtime/tools/setup-envtest@release-0.18
+        run: go install sigs.k8s.io/controller-runtime/tools/setup-envtest@latest
 
       - name: Download envtest binaries
-        run: |
-          setup-envtest use 1.30.0 --bin-dir ./bin
+        run: setup-envtest use 1.30.0 --bin-dir ./bin/k8s
 
       - name: Run controller integration tests
         run: |
-          KUBEBUILDER_ASSETS="$(setup-envtest use 1.30.0 --bin-dir ./bin -p path)" \
-            go test ./internal/controller/... -v -coverprofile=coverage-integration.out
+          export KUBEBUILDER_ASSETS="$(setup-envtest use 1.30.0 --bin-dir ./bin/k8s -p path)"
+          go test ./internal/controller/... -v -coverprofile=coverage-integration.out
 
       - name: Upload coverage
         uses: actions/upload-artifact@v4
@@ -79,15 +77,12 @@ jobs:
           go-version: ${{ env.GO_VERSION }}
           cache: true
 
-      - name: Download controller-gen
+      - name: Generate and verify
         run: |
           GOBIN=$(pwd)/bin go install sigs.k8s.io/controller-tools/cmd/controller-gen@v0.15.0
-
-      - name: Generate code
-        run: |
           export PATH=$PATH:$(pwd)/bin
-          make generate
-          make manifests
+          make generate manifests
+          git diff --exit-code || (echo "Generated files are out of date, run make generate manifests" && exit 1)
 
       - name: Build binary
         run: go build -o bin/manager ./cmd/main.go
@@ -99,7 +94,7 @@ jobs:
     name: E2E Tests
     runs-on: ubuntu-latest
     needs: [build]
-    if: github.event_name == 'push'
+    if: github.event_name == 'workflow_dispatch'
     steps:
       - uses: actions/checkout@v4
 

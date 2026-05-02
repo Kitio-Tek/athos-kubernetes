@@ -6,6 +6,7 @@ issues:
   # don't skip warning about doc comments
   # don't exclude the default set of lint
   exclude-use-default: false
+  max-same-issues: 0
   # restore some of the defaults
   # (fill in the rest as needed)
   exclude-rules:
@@ -21,10 +22,10 @@ linters:
   enable:
     - dupl
     - errcheck
-    - exportloopref
     - ginkgolinter
     - goconst
     - gocyclo
+    - godot
     - gofmt
     - goimports
     - gosimple
@@ -33,6 +34,7 @@ linters:
     - lll
     - misspell
     - nakedret
+    - nolintlint
     - prealloc
     - revive
     - staticcheck
@@ -40,8 +42,12 @@ linters:
     - unconvert
     - unparam
     - unused
+    - whitespace
 
 linters-settings:
   revive:
     rules:
       - name: comment-spacings
+  godot:
+    scope: declarations
+    period: true
