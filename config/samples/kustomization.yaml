@@ -1,0 +1,6 @@
+## Append samples of your project ##
+resources:
+- pg_v1alpha1_postgrescluster.yaml
+- pg_v1alpha1_postgresbackup.yaml
+- pg_v1alpha1_postgresuser.yaml
+# +kubebuilder:scaffold:manifestskustomizesamples

@@ -1,0 +1,31 @@
+apiVersion: pg.vigil.io/v1alpha1
+kind: PostgresCluster
+metadata:
+  name: example-cluster
+  namespace: default
+  labels:
+    app.kubernetes.io/name: vigil
+    app.kubernetes.io/managed-by: kustomize
+spec:
+  postgresVersion: 16
+  instances: 1
+  storage:
+    size: 10Gi
+  resources:
+    requests:
+      cpu: 250m
+      memory: 256Mi
+    limits:
+      cpu: "1"
+      memory: 1Gi
+  postgresParameters:
+    max_connections: "200"
+    shared_buffers: "256MB"
+  monitoring:
+    enabled: true
+    port: 9187
+  tls:
+    enabled: true
+  backup:
+    enabled: false
+    retentionPolicy: "7d"

@@ -1,0 +1,21 @@
+apiVersion: pg.vigil.io/v1alpha1
+kind: PostgresUser
+metadata:
+  name: example-app-user
+  namespace: default
+  labels:
+    app.kubernetes.io/name: vigil
+    app.kubernetes.io/managed-by: kustomize
+spec:
+  clusterName: example-cluster
+  passwordSecret:
+    name: example-app-user-password
+  databases:
+    - name: myapp
+      privileges:
+        - SELECT
+        - INSERT
+        - UPDATE
+        - DELETE
+  connectionLimit: 20
+  superuser: false
