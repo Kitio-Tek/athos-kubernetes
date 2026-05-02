@@ -1,0 +1,10 @@
+apiVersion: kuttl.dev/v1beta1
+kind: TestSuite
+testDirs:
+  - tests/
+timeout: 120
+parallel: 1
+skipDelete: false
+startKIND: false
+kindContainers:
+  - ghcr.io/kitio-tek/vigil:latest

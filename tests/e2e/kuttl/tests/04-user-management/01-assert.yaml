@@ -1,0 +1,7 @@
+apiVersion: pg.vigil.io/v1alpha1
+kind: PostgresUser
+metadata:
+  name: e2e-app-user
+  namespace: default
+status:
+  applied: true

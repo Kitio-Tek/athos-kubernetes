@@ -1,0 +1,7 @@
+apiVersion: pg.vigil.io/v1alpha1
+kind: PostgresCluster
+metadata:
+  name: e2e-cluster
+  namespace: default
+spec:
+  instances: 3
