@@ -11,6 +11,4 @@ keywords:
 home: https://github.com/Kitio-Tek/vigil-kubernetes
 sources:
   - https://github.com/Kitio-Tek/vigil-kubernetes
-maintainers:
-  - name: Kitio-Tek
-    email: kmyriantek@gmail.com
+
