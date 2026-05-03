@@ -37,6 +37,7 @@ import (
 
 	pgv1alpha1 "github.com/Kitio-Tek/athos-kubernetes/api/v1alpha1"
 	"github.com/Kitio-Tek/athos-kubernetes/internal/controller"
+	"github.com/Kitio-Tek/athos-kubernetes/internal/version"
 	// +kubebuilder:scaffold:imports
 )
 
@@ -76,6 +77,10 @@ func main() {
 	flag.Parse()
 
 	ctrl.SetLogger(zap.New(zap.UseFlagOptions(&opts)))
+
+	setupLog.Info("starting athos-operator", "version", version.Info().Version,
+		"commit", version.Info().Commit, "buildDate", version.Info().BuildDate,
+		"goVersion", version.Info().GoVersion, "platform", version.Info().Platform)
 
 	// if the enable-http2 flag is false (the default), http/2 should be disabled
 	// due to its vulnerabilities. More specifically, disabling http/2 will
