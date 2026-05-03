@@ -73,14 +73,14 @@ func TestMinLength(t *testing.T) {
 
 func TestIsDNSLabel(t *testing.T) {
 	cases := map[string]bool{
-		"foo":          true,
-		"foo-bar":      true,
-		"my-pg-1":      true,
-		"":             false,
-		"-foo":         false,
-		"foo-":         false,
-		"FOO":          false,
-		"foo bar":      false,
+		"foo":                   true,
+		"foo-bar":               true,
+		"my-pg-1":               true,
+		"":                      false,
+		"-foo":                  false,
+		"foo-":                  false,
+		"FOO":                   false,
+		"foo bar":               false,
 		strings.Repeat("a", 64): false,
 		strings.Repeat("a", 63): true,
 	}
