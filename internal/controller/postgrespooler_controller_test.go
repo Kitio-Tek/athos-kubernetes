@@ -31,8 +31,8 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
-	pgv1alpha1 "github.com/Kitio-Tek/vigil-kubernetes/api/v1alpha1"
-	"github.com/Kitio-Tek/vigil-kubernetes/internal/pgbouncer"
+	pgv1alpha1 "github.com/Kitio-Tek/athos-kubernetes/api/v1alpha1"
+	"github.com/Kitio-Tek/athos-kubernetes/internal/pgbouncer"
 )
 
 var _ = Describe("PostgresPooler Controller", func() {
@@ -128,7 +128,7 @@ var _ = Describe("PostgresPooler Controller", func() {
 	Describe("Pooler annotation present", func() {
 		BeforeEach(func() {
 			c := newCluster(map[string]string{
-				"pg.vigil.io/enable-pooler": "true",
+				"pg.athos.io/enable-pooler": "true",
 			})
 			Expect(k8sClient.Create(ctx, c)).To(Succeed())
 		})
@@ -167,7 +167,7 @@ var _ = Describe("PostgresPooler Controller", func() {
 				Name:      pgbouncer.ServiceName(poolerCluster),
 				Namespace: poolerNS,
 			}, svc)).To(Succeed())
-			Expect(svc.Spec.Selector).To(HaveKeyWithValue("pg.vigil.io/cluster", poolerCluster))
+			Expect(svc.Spec.Selector).To(HaveKeyWithValue("pg.athos.io/cluster", poolerCluster))
 		})
 
 		It("should reconcile idempotently without error", func() {
@@ -181,7 +181,7 @@ var _ = Describe("PostgresPooler Controller", func() {
 	Describe("Cluster paused", func() {
 		BeforeEach(func() {
 			c := newCluster(map[string]string{
-				"pg.vigil.io/enable-pooler": "true",
+				"pg.athos.io/enable-pooler": "true",
 			})
 			c.Spec.Paused = true
 			Expect(k8sClient.Create(ctx, c)).To(Succeed())

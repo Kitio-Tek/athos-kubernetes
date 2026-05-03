@@ -33,13 +33,13 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	pgv1alpha1 "github.com/Kitio-Tek/vigil-kubernetes/api/v1alpha1"
-	"github.com/Kitio-Tek/vigil-kubernetes/internal/postgres"
+	pgv1alpha1 "github.com/Kitio-Tek/athos-kubernetes/api/v1alpha1"
+	"github.com/Kitio-Tek/athos-kubernetes/internal/postgres"
 )
 
-//+kubebuilder:rbac:groups=pg.vigil.io,resources=postgresclusters,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=pg.vigil.io,resources=postgresclusters/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=pg.vigil.io,resources=postgresclusters/finalizers,verbs=update
+//+kubebuilder:rbac:groups=pg.athos.io,resources=postgresclusters,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=pg.athos.io,resources=postgresclusters/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=pg.athos.io,resources=postgresclusters/finalizers,verbs=update
 //+kubebuilder:rbac:groups=apps,resources=statefulsets,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=core,resources=services,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=core,resources=configmaps,verbs=get;list;watch;create;update;patch;delete

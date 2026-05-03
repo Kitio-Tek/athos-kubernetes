@@ -32,9 +32,9 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	pgv1alpha1 "github.com/Kitio-Tek/vigil-kubernetes/api/v1alpha1"
-	"github.com/Kitio-Tek/vigil-kubernetes/internal/pgbouncer"
-	"github.com/Kitio-Tek/vigil-kubernetes/internal/postgres"
+	pgv1alpha1 "github.com/Kitio-Tek/athos-kubernetes/api/v1alpha1"
+	"github.com/Kitio-Tek/athos-kubernetes/internal/pgbouncer"
+	"github.com/Kitio-Tek/athos-kubernetes/internal/postgres"
 )
 
 //+kubebuilder:rbac:groups=apps,resources=deployments,verbs=get;list;watch;create;update;patch;delete
@@ -74,7 +74,7 @@ func (r *PostgresPoolerReconciler) Reconcile(ctx context.Context, req ctrl.Reque
 	}
 
 	// Only reconcile when a pooler is explicitly requested via annotation.
-	if cluster.GetAnnotations()["pg.vigil.io/enable-pooler"] != "true" {
+	if cluster.GetAnnotations()["pg.athos.io/enable-pooler"] != "true" {
 		return ctrl.Result{}, nil
 	}
 
@@ -148,14 +148,14 @@ func (r *PostgresPoolerReconciler) reconcilePoolerDeployment(
 			Selector: &metav1.LabelSelector{
 				MatchLabels: map[string]string{
 					"app.kubernetes.io/component": "pooler",
-					"pg.vigil.io/cluster":         cluster.Name,
+					"pg.athos.io/cluster":         cluster.Name,
 				},
 			},
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
 					Labels: map[string]string{
 						"app.kubernetes.io/component": "pooler",
-						"pg.vigil.io/cluster":         cluster.Name,
+						"pg.athos.io/cluster":         cluster.Name,
 					},
 				},
 				Spec: corev1.PodSpec{
@@ -236,7 +236,7 @@ func (r *PostgresPoolerReconciler) reconcilePoolerService(
 			Type: corev1.ServiceTypeClusterIP,
 			Selector: map[string]string{
 				"app.kubernetes.io/component": "pooler",
-				"pg.vigil.io/cluster":         cluster.Name,
+				"pg.athos.io/cluster":         cluster.Name,
 			},
 			Ports: []corev1.ServicePort{
 				{

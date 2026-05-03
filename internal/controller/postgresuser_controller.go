@@ -36,13 +36,13 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	pgv1alpha1 "github.com/Kitio-Tek/vigil-kubernetes/api/v1alpha1"
-	"github.com/Kitio-Tek/vigil-kubernetes/internal/postgres"
+	pgv1alpha1 "github.com/Kitio-Tek/athos-kubernetes/api/v1alpha1"
+	"github.com/Kitio-Tek/athos-kubernetes/internal/postgres"
 )
 
-//+kubebuilder:rbac:groups=pg.vigil.io,resources=postgresusers,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=pg.vigil.io,resources=postgresusers/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=pg.vigil.io,resources=postgresusers/finalizers,verbs=update
+//+kubebuilder:rbac:groups=pg.athos.io,resources=postgresusers,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=pg.athos.io,resources=postgresusers/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=pg.athos.io,resources=postgresusers/finalizers,verbs=update
 
 // PostgresUserReconciler reconciles a PostgresUser object.
 type PostgresUserReconciler struct {

@@ -31,8 +31,8 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
-	pgv1alpha1 "github.com/Kitio-Tek/vigil-kubernetes/api/v1alpha1"
-	"github.com/Kitio-Tek/vigil-kubernetes/internal/postgres"
+	pgv1alpha1 "github.com/Kitio-Tek/athos-kubernetes/api/v1alpha1"
+	"github.com/Kitio-Tek/athos-kubernetes/internal/postgres"
 )
 
 var _ = Describe("PostgresCluster Controller", func() {

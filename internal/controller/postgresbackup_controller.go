@@ -31,13 +31,13 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	pgv1alpha1 "github.com/Kitio-Tek/vigil-kubernetes/api/v1alpha1"
-	"github.com/Kitio-Tek/vigil-kubernetes/internal/postgres"
+	pgv1alpha1 "github.com/Kitio-Tek/athos-kubernetes/api/v1alpha1"
+	"github.com/Kitio-Tek/athos-kubernetes/internal/postgres"
 )
 
-//+kubebuilder:rbac:groups=pg.vigil.io,resources=postgresbackups,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=pg.vigil.io,resources=postgresbackups/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=pg.vigil.io,resources=postgresbackups/finalizers,verbs=update
+//+kubebuilder:rbac:groups=pg.athos.io,resources=postgresbackups,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=pg.athos.io,resources=postgresbackups/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=pg.athos.io,resources=postgresbackups/finalizers,verbs=update
 //+kubebuilder:rbac:groups=batch,resources=jobs,verbs=get;list;watch;create;update;patch;delete
 
 // PostgresBackupReconciler reconciles a PostgresBackup object.
