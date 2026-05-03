@@ -88,12 +88,12 @@ func hasRunningContainer(p *corev1.Pod) bool {
 // Group sorts the pods of a cluster into health groups for use in rolling
 // updates. The fields are exported so tests can compare slices.
 type Group struct {
-	Healthy      []*corev1.Pod
-	Unhealthy    []*corev1.Pod
-	Starting     []*corev1.Pod
-	Terminating  []*corev1.Pod
-	Pending      []*corev1.Pod
-	Failed       []*corev1.Pod
+	Healthy     []*corev1.Pod
+	Unhealthy   []*corev1.Pod
+	Starting    []*corev1.Pod
+	Terminating []*corev1.Pod
+	Pending     []*corev1.Pod
+	Failed      []*corev1.Pod
 }
 
 // Total returns the number of pods across all groups.

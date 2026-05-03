@@ -54,12 +54,12 @@ const (
 
 // Observed captures the current observed state of a cluster.
 type Observed struct {
-	DesiredReplicas int32
-	CurrentReplicas int32
-	ReadyReplicas   int32
-	DesiredImage    string
-	CurrentImage    string
-	PrimaryHealthy  bool
+	DesiredReplicas  int32
+	CurrentReplicas  int32
+	ReadyReplicas    int32
+	DesiredImage     string
+	CurrentImage     string
+	PrimaryHealthy   bool
 	HasPersistedData bool
 }
 

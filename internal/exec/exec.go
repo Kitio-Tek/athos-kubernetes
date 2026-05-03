@@ -62,16 +62,16 @@ func shellQuote(s string) string {
 
 // PSQLOptions controls how a psql Command is built.
 type PSQLOptions struct {
-	Host          string
-	Port          int
-	User          string
-	Database      string
-	Password      string
-	SQL           string
-	NoPsqlrc      bool
-	TupleOnly     bool
+	Host           string
+	Port           int
+	User           string
+	Database       string
+	Password       string
+	SQL            string
+	NoPsqlrc       bool
+	TupleOnly      bool
 	NonInteractive bool
-	Variables     map[string]string
+	Variables      map[string]string
 }
 
 // PSQL returns a Command that runs psql with the requested options. The

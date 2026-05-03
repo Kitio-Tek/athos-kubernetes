@@ -85,11 +85,11 @@ func TestSpreads(t *testing.T) {
 
 func TestIsRequired(t *testing.T) {
 	cases := map[topology.Spread]bool{
-		topology.SpreadNone:        false,
-		topology.SpreadHost:        true,
-		topology.SpreadZone:        true,
-		topology.SpreadPreferHost:  false,
-		topology.SpreadPreferZone:  false,
+		topology.SpreadNone:       false,
+		topology.SpreadHost:       true,
+		topology.SpreadZone:       true,
+		topology.SpreadPreferHost: false,
+		topology.SpreadPreferZone: false,
 	}
 	for s, want := range cases {
 		if got := topology.IsRequired(s); got != want {
@@ -100,13 +100,13 @@ func TestIsRequired(t *testing.T) {
 
 func TestSpreadFromString(t *testing.T) {
 	cases := map[string]topology.Spread{
-		"":            topology.SpreadPreferHost,
-		"none":        topology.SpreadNone,
-		"None":        topology.SpreadNone,
-		"Host":        topology.SpreadHost,
-		"zone":        topology.SpreadZone,
-		"PreferHost":  topology.SpreadPreferHost,
-		"PreferZone":  topology.SpreadPreferZone,
+		"":             topology.SpreadPreferHost,
+		"none":         topology.SpreadNone,
+		"None":         topology.SpreadNone,
+		"Host":         topology.SpreadHost,
+		"zone":         topology.SpreadZone,
+		"PreferHost":   topology.SpreadPreferHost,
+		"PreferZone":   topology.SpreadPreferZone,
 		"unrecognized": topology.SpreadPreferHost,
 	}
 	for s, want := range cases {

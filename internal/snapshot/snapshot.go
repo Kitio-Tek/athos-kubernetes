@@ -90,9 +90,9 @@ func joinName(pvc, suffix string) string {
 
 func buildLabels(cluster, pvc string) map[string]string {
 	return map[string]string{
-		"pg.athos.io/cluster":         cluster,
-		"pg.athos.io/source-pvc":      pvc,
-		"app.kubernetes.io/component": "snapshot",
+		"pg.athos.io/cluster":          cluster,
+		"pg.athos.io/source-pvc":       pvc,
+		"app.kubernetes.io/component":  "snapshot",
 		"app.kubernetes.io/managed-by": "athos",
 	}
 }

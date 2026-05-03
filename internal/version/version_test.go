@@ -55,11 +55,11 @@ func TestShortVersion_StripsV(t *testing.T) {
 	defer func() { version.Version = orig }()
 
 	cases := map[string]string{
-		"v1.2.3":           "1.2",
-		"1.2.3":            "1.2",
-		"v2.0.0-rc1":       "2.0",
-		"v1.0":             "1.0",
-		"v1.2.3+build.42":  "1.2",
+		"v1.2.3":          "1.2",
+		"1.2.3":           "1.2",
+		"v2.0.0-rc1":      "2.0",
+		"v1.0":            "1.0",
+		"v1.2.3+build.42": "1.2",
 	}
 	for in, want := range cases {
 		version.Version = in
