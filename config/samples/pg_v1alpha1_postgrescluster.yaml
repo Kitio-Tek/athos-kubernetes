@@ -1,10 +1,10 @@
-apiVersion: pg.vigil.io/v1alpha1
+apiVersion: pg.athos.io/v1alpha1
 kind: PostgresCluster
 metadata:
   name: example-cluster
   namespace: default
   labels:
-    app.kubernetes.io/name: vigil
+    app.kubernetes.io/name: athos
     app.kubernetes.io/managed-by: kustomize
 spec:
   postgresVersion: 16

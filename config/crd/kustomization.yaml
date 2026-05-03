@@ -2,9 +2,9 @@
 # since it depends on service name and namespace that are out of this kustomize package.
 # It should be run by config/default
 resources:
-- bases/pg.vigil.io_postgresclusters.yaml
-- bases/pg.vigil.io_postgresbackups.yaml
-- bases/pg.vigil.io_postgresusers.yaml
+- bases/pg.athos.io_postgresclusters.yaml
+- bases/pg.athos.io_postgresbackups.yaml
+- bases/pg.athos.io_postgresusers.yaml
 # +kubebuilder:scaffold:crdkustomizeresource
 
 patches:

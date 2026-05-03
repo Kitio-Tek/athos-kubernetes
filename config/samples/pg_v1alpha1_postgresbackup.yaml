@@ -1,10 +1,10 @@
-apiVersion: pg.vigil.io/v1alpha1
+apiVersion: pg.athos.io/v1alpha1
 kind: PostgresBackup
 metadata:
   name: example-backup
   namespace: default
   labels:
-    app.kubernetes.io/name: vigil
+    app.kubernetes.io/name: athos
     app.kubernetes.io/managed-by: kustomize
 spec:
   clusterName: example-cluster

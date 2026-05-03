@@ -113,7 +113,7 @@ rules:
   - update
   - watch
 - apiGroups:
-  - pg.vigil.io
+  - pg.athos.io
   resources:
   - postgresbackups
   verbs:
@@ -125,13 +125,13 @@ rules:
   - update
   - watch
 - apiGroups:
-  - pg.vigil.io
+  - pg.athos.io
   resources:
   - postgresbackups/finalizers
   verbs:
   - update
 - apiGroups:
-  - pg.vigil.io
+  - pg.athos.io
   resources:
   - postgresbackups/status
   verbs:
@@ -139,7 +139,7 @@ rules:
   - patch
   - update
 - apiGroups:
-  - pg.vigil.io
+  - pg.athos.io
   resources:
   - postgresclusters
   verbs:
@@ -151,13 +151,13 @@ rules:
   - update
   - watch
 - apiGroups:
-  - pg.vigil.io
+  - pg.athos.io
   resources:
   - postgresclusters/finalizers
   verbs:
   - update
 - apiGroups:
-  - pg.vigil.io
+  - pg.athos.io
   resources:
   - postgresclusters/status
   verbs:
@@ -165,7 +165,7 @@ rules:
   - patch
   - update
 - apiGroups:
-  - pg.vigil.io
+  - pg.athos.io
   resources:
   - postgresusers
   verbs:
@@ -177,13 +177,13 @@ rules:
   - update
   - watch
 - apiGroups:
-  - pg.vigil.io
+  - pg.athos.io
   resources:
   - postgresusers/finalizers
   verbs:
   - update
 - apiGroups:
-  - pg.vigil.io
+  - pg.athos.io
   resources:
   - postgresusers/status
   verbs:
