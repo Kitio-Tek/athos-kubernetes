@@ -69,10 +69,18 @@ var _ = Describe("PostgresCluster Controller", func() {
 		}
 	}
 
+	// doReconcile drives the reconciler until it stops requesting an immediate
+	// requeue. Several reconcile passes are required: one to add the finalizer
+	// and another to create the owned sub-resources.
 	doReconcile := func() {
 		r := reconciler()
-		_, err := r.Reconcile(ctx, reconcile.Request{NamespacedName: clusterKey})
-		Expect(err).NotTo(HaveOccurred())
+		for i := 0; i < 5; i++ {
+			res, err := r.Reconcile(ctx, reconcile.Request{NamespacedName: clusterKey})
+			Expect(err).NotTo(HaveOccurred())
+			if !res.Requeue {
+				return
+			}
+		}
 	}
 
 	BeforeEach(func() {
