@@ -27,6 +27,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/client-go/tools/record"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller"
@@ -34,6 +35,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
 	pgv1alpha1 "github.com/Kitio-Tek/athos-kubernetes/api/v1alpha1"
+	"github.com/Kitio-Tek/athos-kubernetes/internal/events"
 	"github.com/Kitio-Tek/athos-kubernetes/internal/password"
 	"github.com/Kitio-Tek/athos-kubernetes/internal/postgres"
 )
@@ -53,7 +55,22 @@ import (
 // PostgresClusterReconciler reconciles a PostgresCluster object.
 type PostgresClusterReconciler struct {
 	client.Client
-	Scheme *runtime.Scheme
+	Scheme   *runtime.Scheme
+	Recorder record.EventRecorder
+}
+
+// recordEventf publishes a Kubernetes Event for the cluster, falling back
+// to a no-op when no Recorder is configured (which is the case in unit
+// tests that drive Reconcile directly).
+func (r *PostgresClusterReconciler) recordEventf(
+	cluster *pgv1alpha1.PostgresCluster,
+	eventType, reason, format string,
+	args ...interface{},
+) {
+	if r.Recorder == nil {
+		return
+	}
+	r.Recorder.Eventf(cluster, eventType, reason, format, args...)
 }
 
 // Reconcile is the core reconciliation loop. It drives the cluster from its
@@ -206,7 +223,12 @@ func (r *PostgresClusterReconciler) reconcileCredentials(
 	if err := controllerutil.SetControllerReference(cluster, desired, r.Scheme); err != nil {
 		return err
 	}
-	return r.Create(ctx, desired)
+	if err := r.Create(ctx, desired); err != nil {
+		return err
+	}
+	r.recordEventf(cluster, corev1.EventTypeNormal, events.EventReasonCreated,
+		"Created credentials Secret %q", desired.Name)
+	return nil
 }
 
 // reconcileConfigMap ensures the postgresql.conf / pg_hba.conf ConfigMap is
@@ -223,7 +245,12 @@ func (r *PostgresClusterReconciler) reconcileConfigMap(
 	existing := &corev1.ConfigMap{}
 	err := r.Get(ctx, types.NamespacedName{Name: desired.Name, Namespace: desired.Namespace}, existing)
 	if errors.IsNotFound(err) {
-		return r.Create(ctx, desired)
+		if err := r.Create(ctx, desired); err != nil {
+			return err
+		}
+		r.recordEventf(cluster, corev1.EventTypeNormal, events.EventReasonCreated,
+			"Created ConfigMap %q", desired.Name)
+		return nil
 	}
 	if err != nil {
 		return err
@@ -247,13 +274,24 @@ func (r *PostgresClusterReconciler) reconcileStatefulSet(
 	existing := &appsv1.StatefulSet{}
 	err := r.Get(ctx, types.NamespacedName{Name: desired.Name, Namespace: desired.Namespace}, existing)
 	if errors.IsNotFound(err) {
-		return r.Create(ctx, desired)
+		if err := r.Create(ctx, desired); err != nil {
+			return err
+		}
+		r.recordEventf(cluster, corev1.EventTypeNormal, events.EventReasonCreated,
+			"Created StatefulSet %q with %d replicas", desired.Name, *desired.Spec.Replicas)
+		return nil
 	}
 	if err != nil {
 		return err
 	}
 
-	// Propagate mutable fields.
+	// Propagate mutable fields and emit a scale event when replicas change.
+	if existing.Spec.Replicas != nil && desired.Spec.Replicas != nil &&
+		*existing.Spec.Replicas != *desired.Spec.Replicas {
+		r.recordEventf(cluster, corev1.EventTypeNormal, events.EventReasonUpdated,
+			"Scaling StatefulSet %q from %d to %d replicas",
+			desired.Name, *existing.Spec.Replicas, *desired.Spec.Replicas)
+	}
 	existing.Spec.Replicas = desired.Spec.Replicas
 	existing.Spec.Template = desired.Spec.Template
 	return r.Update(ctx, existing)
@@ -353,12 +391,16 @@ func (r *PostgresClusterReconciler) updateStatus(
 // SetupWithManager registers the controller with the manager and declares the
 // set of owned resource types.
 func (r *PostgresClusterReconciler) SetupWithManager(mgr ctrl.Manager) error {
+	if r.Recorder == nil {
+		r.Recorder = mgr.GetEventRecorderFor("athos-postgrescluster")
+	}
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&pgv1alpha1.PostgresCluster{}).
 		Owns(&appsv1.StatefulSet{}).
 		Owns(&corev1.Service{}).
 		Owns(&corev1.ConfigMap{}).
 		Owns(&corev1.ServiceAccount{}).
+		Owns(&corev1.Secret{}).
 		WithOptions(controller.Options{MaxConcurrentReconciles: 2}).
 		Complete(r)
 }
