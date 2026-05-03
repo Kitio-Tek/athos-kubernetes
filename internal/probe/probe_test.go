@@ -19,7 +19,7 @@ package probe_test
 import (
 	"testing"
 
-	"github.com/Kitio-Tek/vigil-kubernetes/internal/probe"
+	"github.com/Kitio-Tek/athos-kubernetes/internal/probe"
 )
 
 func TestLivenessProbe_DefaultsApplied(t *testing.T) {

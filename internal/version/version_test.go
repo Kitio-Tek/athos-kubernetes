@@ -21,7 +21,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Kitio-Tek/vigil-kubernetes/internal/version"
+	"github.com/Kitio-Tek/athos-kubernetes/internal/version"
 )
 
 func TestInfo_PopulatesPlatform(t *testing.T) {

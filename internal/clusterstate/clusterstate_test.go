@@ -20,7 +20,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Kitio-Tek/vigil-kubernetes/internal/clusterstate"
+	"github.com/Kitio-Tek/athos-kubernetes/internal/clusterstate"
 )
 
 func TestEvaluate_DesiredState(t *testing.T) {

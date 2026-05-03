@@ -20,7 +20,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Kitio-Tek/vigil-kubernetes/internal/labels"
+	"github.com/Kitio-Tek/athos-kubernetes/internal/labels"
 )
 
 func TestMerge_OverlayWins(t *testing.T) {

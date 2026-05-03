@@ -23,7 +23,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/Kitio-Tek/vigil-kubernetes/internal/podmanager"
+	"github.com/Kitio-Tek/athos-kubernetes/internal/podmanager"
 )
 
 func pod(name string, status corev1.PodPhase, ready bool) *corev1.Pod {

@@ -21,7 +21,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Kitio-Tek/vigil-kubernetes/internal/timeutil"
+	"github.com/Kitio-Tek/athos-kubernetes/internal/timeutil"
 )
 
 const (

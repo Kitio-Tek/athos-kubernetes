@@ -18,9 +18,9 @@ limitations under the License.
 // variables Version, Commit and BuildDate are intended to be set with
 // -ldflags at link time, e.g.
 //
-//	-ldflags "-X github.com/Kitio-Tek/vigil-kubernetes/internal/version.Version=1.2.3 \
-//	          -X github.com/Kitio-Tek/vigil-kubernetes/internal/version.Commit=$(git rev-parse HEAD) \
-//	          -X github.com/Kitio-Tek/vigil-kubernetes/internal/version.BuildDate=$(date -u +%FT%TZ)"
+//	-ldflags "-X github.com/Kitio-Tek/athos-kubernetes/internal/version.Version=1.2.3 \
+//	          -X github.com/Kitio-Tek/athos-kubernetes/internal/version.Commit=$(git rev-parse HEAD) \
+//	          -X github.com/Kitio-Tek/athos-kubernetes/internal/version.BuildDate=$(date -u +%FT%TZ)"
 //
 // The accessors in this file produce structured and string forms suitable
 // for log lines, status fields and HTTP user agents.
@@ -33,7 +33,7 @@ import (
 )
 
 // Product is the canonical short name embedded in user-agent strings.
-const Product = "vigil-operator"
+const Product = "athos-operator"
 
 // Default placeholder values used when the binary is built without
 // -ldflags (for example during `go test` or local development).
@@ -80,7 +80,7 @@ func Info() BuildInfo {
 }
 
 // String returns a single-line human-readable representation suitable for
-// log lines such as "vigil-operator v1.2.3 (abc1234) built 2026-04-01T...".
+// log lines such as "athos-operator v1.2.3 (abc1234) built 2026-04-01T...".
 func String() string {
 	return fmt.Sprintf("%s %s (%s) built %s on %s", Product, Version, shortCommit(Commit), BuildDate, runtime.Version())
 }
@@ -102,7 +102,7 @@ func ShortVersion() string {
 }
 
 // UserAgent returns an HTTP User-Agent string composed of the product name
-// and short version, e.g. "vigil-operator/1.2".
+// and short version, e.g. "athos-operator/1.2".
 func UserAgent() string {
 	return Product + "/" + ShortVersion()
 }

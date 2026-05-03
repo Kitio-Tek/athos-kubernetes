@@ -22,7 +22,7 @@ import (
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/Kitio-Tek/vigil-kubernetes/internal/conditions"
+	"github.com/Kitio-Tek/athos-kubernetes/internal/conditions"
 )
 
 func TestSet_AppendsNew(t *testing.T) {

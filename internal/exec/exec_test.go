@@ -20,7 +20,7 @@ import (
 	"strings"
 	"testing"
 
-	pgexec "github.com/Kitio-Tek/vigil-kubernetes/internal/exec"
+	pgexec "github.com/Kitio-Tek/athos-kubernetes/internal/exec"
 )
 
 func TestCommand_String(t *testing.T) {

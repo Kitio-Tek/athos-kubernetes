@@ -20,7 +20,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Kitio-Tek/vigil-kubernetes/internal/manifest"
+	"github.com/Kitio-Tek/athos-kubernetes/internal/manifest"
 )
 
 const sample = `apiVersion: v1

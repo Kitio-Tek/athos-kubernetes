@@ -20,7 +20,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Kitio-Tek/vigil-kubernetes/internal/healthcheck"
+	"github.com/Kitio-Tek/athos-kubernetes/internal/healthcheck"
 )
 
 func passing(name string) healthcheck.Probe {

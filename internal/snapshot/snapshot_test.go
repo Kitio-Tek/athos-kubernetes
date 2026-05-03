@@ -23,7 +23,7 @@ import (
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/Kitio-Tek/vigil-kubernetes/internal/snapshot"
+	"github.com/Kitio-Tek/athos-kubernetes/internal/snapshot"
 )
 
 func TestBuild_Defaults(t *testing.T) {
@@ -40,7 +40,7 @@ func TestBuild_Defaults(t *testing.T) {
 	if !strings.HasPrefix(m.Name, "pgdata-pg-0-snap-") {
 		t.Errorf("Name prefix = %q", m.Name)
 	}
-	if m.Labels["pg.vigil.io/cluster"] != "pg" {
+	if m.Labels["pg.athos.io/cluster"] != "pg" {
 		t.Error("cluster label missing")
 	}
 	if m.SnapshotClassName != "csi-snap" {

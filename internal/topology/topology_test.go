@@ -21,10 +21,10 @@ import (
 
 	corev1 "k8s.io/api/core/v1"
 
-	"github.com/Kitio-Tek/vigil-kubernetes/internal/topology"
+	"github.com/Kitio-Tek/athos-kubernetes/internal/topology"
 )
 
-var selector = map[string]string{"app": "vigil", "cluster": "pg"}
+var selector = map[string]string{"app": "athos", "cluster": "pg"}
 
 func TestPodAntiAffinity_None(t *testing.T) {
 	if topology.PodAntiAffinity(selector, topology.SpreadNone) != nil {
