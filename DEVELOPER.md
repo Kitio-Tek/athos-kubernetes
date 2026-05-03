@@ -15,16 +15,19 @@ running tests, and debugging locally.
 ## Repository Structure
 
 ```
-athos/
-  api/v1alpha1/           Custom resource type definitions
-  cmd/main.go             Operator entry point
-  config/                 Kustomize manifests
-  charts/athos/           Helm chart
+athos-kubernetes/
+  api/v1alpha1/                Custom resource type definitions
+  cmd/main.go                  Operator entry point
+  cmd/plugin/                  kubectl-athos plugin
+  config/                      Kustomize manifests
+  charts/athos-kubernetes/     Helm chart shipped with releases
   internal/
-    controller/           Reconciler implementations
-    postgres/             PostgreSQL-specific helpers (naming, config, resources)
-  tests/e2e/kuttl/        KUTTL end-to-end tests
-  .github/workflows/      CI/CD pipelines
+    controller/                Reconciler implementations
+    postgres/                  PostgreSQL-specific helpers (naming, config, resources)
+    ...                        Other reusable libraries (cronexpr, sqlescape, etc.)
+  tests/e2e/kuttl/             KUTTL end-to-end tests
+  test/e2e/                    Go-based end-to-end tests
+  .github/workflows/           CI/CD pipelines
 ```
 
 ## Setting Up the Development Environment
@@ -33,7 +36,7 @@ Clone the repository and download dependencies:
 
 ```bash
 git clone git@github.com:Kitio-Tek/athos-kubernetes.git
-cd athos
+cd athos-kubernetes
 go mod download
 ```
 
@@ -147,13 +150,27 @@ To inspect the state of a specific reconcile loop, add structured log entries us
 
 ## Releasing
 
-Releases are triggered by pushing a semver tag:
+Releases are produced manually for each semver tag. The flow is:
 
-```bash
-git tag v0.2.0
-git push origin v0.2.0
-```
+1. Update `charts/athos-kubernetes/Chart.yaml` to the new version.
+2. Commit, push, and tag:
 
-The release workflow builds and pushes the container image to
-`ghcr.io/kitio-tek/athos-kubernetes:<version>` and packages the Helm chart as a GitHub
-release artifact.
+   ```bash
+   git tag -a v0.7.0 -m "v0.7.0 - <one-line summary>"
+   git push origin main
+   git push origin v0.7.0
+   ```
+
+3. Package the helm chart and create the GitHub release:
+
+   ```bash
+   helm package charts/athos-kubernetes/ -d /tmp
+   gh release create v0.7.0 /tmp/athos-kubernetes-0.7.0.tgz \
+     --title "v0.7.0" --notes-file release-notes.md
+   ```
+
+4. Optionally trigger the `Release` workflow from the Actions tab to also
+   publish the container image to `ghcr.io/kitio-tek/athos-kubernetes:<version>`.
+   The workflow accepts the tag as a `workflow_dispatch` input, so it will
+   never fire automatically and never collide with the manual `gh release
+   create` step above.
