@@ -84,7 +84,7 @@ type PostgresUserStatus struct {
 // +kubebuilder:printcolumn:name="Cluster",type="string",JSONPath=".spec.clusterName"
 // +kubebuilder:printcolumn:name="Applied",type="boolean",JSONPath=".status.applied"
 // +kubebuilder:printcolumn:name="Age",type="date",JSONPath=".metadata.creationTimestamp"
-// +kubebuilder:resource:shortName=pgu;pguser,categories=vigil
+// +kubebuilder:resource:shortName=pgu;pguser,categories=athos
 
 // PostgresUser is the Schema for the postgresusers API.
 type PostgresUser struct {

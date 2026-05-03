@@ -277,7 +277,7 @@ const (
 )
 
 // Finalizer applied to every PostgresCluster to allow orderly cleanup.
-const PostgresClusterFinalizer = "pg.vigil.io/finalizer"
+const PostgresClusterFinalizer = "pg.athos.io/finalizer"
 
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
@@ -285,7 +285,7 @@ const PostgresClusterFinalizer = "pg.vigil.io/finalizer"
 // +kubebuilder:printcolumn:name="Primary",type="string",JSONPath=".status.currentPrimary"
 // +kubebuilder:printcolumn:name="Ready",type="integer",JSONPath=".status.readyInstances"
 // +kubebuilder:printcolumn:name="Age",type="date",JSONPath=".metadata.creationTimestamp"
-// +kubebuilder:resource:shortName=pgc;pgcluster,categories=vigil
+// +kubebuilder:resource:shortName=pgc;pgcluster,categories=athos
 
 // PostgresCluster is the Schema for the postgresclusters API.
 type PostgresCluster struct {

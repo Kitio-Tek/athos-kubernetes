@@ -95,7 +95,7 @@ type PostgresBackupStatus struct {
 // +kubebuilder:printcolumn:name="Phase",type="string",JSONPath=".status.phase"
 // +kubebuilder:printcolumn:name="Started",type="date",JSONPath=".status.startTime"
 // +kubebuilder:printcolumn:name="Completed",type="date",JSONPath=".status.completionTime"
-// +kubebuilder:resource:shortName=pgb;pgbackup,categories=vigil
+// +kubebuilder:resource:shortName=pgb;pgbackup,categories=athos
 
 // PostgresBackup is the Schema for the postgresbackups API.
 type PostgresBackup struct {
