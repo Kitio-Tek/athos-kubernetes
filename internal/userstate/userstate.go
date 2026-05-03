@@ -23,6 +23,8 @@ package userstate
 import (
 	"fmt"
 	"sort"
+
+	"github.com/Kitio-Tek/athos-kubernetes/internal/sqlescape"
 )
 
 // User describes the desired state captured by the PostgresUser CRD.
@@ -37,50 +39,84 @@ type User struct {
 
 // Plan emits the SQL statements needed to create or refresh a user.
 // The first call against a fresh cluster will emit a CREATE USER ... and
-// subsequent calls will emit ALTER USER on the same name.
+// subsequent calls will emit ALTER USER on the same name. All identifier
+// and string-literal interpolation goes through internal/sqlescape so
+// embedded quote characters cannot break out of the SQL grammar.
 func Plan(u User, exists bool) ([]string, error) {
 	if u.Name == "" {
 		return nil, fmt.Errorf("userstate: user name is required")
 	}
+	if !sqlescape.IsValidIdentifier(u.Name) {
+		return nil, fmt.Errorf("userstate: invalid user name %q", u.Name)
+	}
+	if err := sqlescape.AssertSafePassword(u.Password); err != nil {
+		return nil, fmt.Errorf("userstate: %w", err)
+	}
+
+	name := sqlescape.Identifier(u.Name)
 	stmts := []string{}
 	header := "CREATE USER"
 	if exists {
 		header = "ALTER USER"
 	}
-	stmts = append(stmts, fmt.Sprintf("%s %q WITH LOGIN", header, u.Name))
+	stmts = append(stmts, fmt.Sprintf("%s %s WITH LOGIN", header, name))
 	if u.Password != "" {
-		stmts = append(stmts, fmt.Sprintf("ALTER USER %q WITH PASSWORD '%s'", u.Name, u.Password))
+		stmts = append(stmts, fmt.Sprintf("ALTER USER %s WITH PASSWORD %s",
+			name, sqlescape.StringLiteral(u.Password)))
 	}
 	if u.Superuser {
-		stmts = append(stmts, fmt.Sprintf("ALTER USER %q SUPERUSER", u.Name))
+		stmts = append(stmts, fmt.Sprintf("ALTER USER %s SUPERUSER", name))
 	} else {
-		stmts = append(stmts, fmt.Sprintf("ALTER USER %q NOSUPERUSER", u.Name))
+		stmts = append(stmts, fmt.Sprintf("ALTER USER %s NOSUPERUSER", name))
 	}
 	if u.ConnectionLimit != 0 {
-		stmts = append(stmts, fmt.Sprintf("ALTER USER %q CONNECTION LIMIT %d", u.Name, u.ConnectionLimit))
+		stmts = append(stmts, fmt.Sprintf("ALTER USER %s CONNECTION LIMIT %d", name, u.ConnectionLimit))
 	}
 	for _, role := range sorted(u.Roles) {
-		stmts = append(stmts, fmt.Sprintf("GRANT %q TO %q", role, u.Name))
+		if !sqlescape.IsValidIdentifier(role) {
+			return nil, fmt.Errorf("userstate: invalid role name %q", role)
+		}
+		stmts = append(stmts, fmt.Sprintf("GRANT %s TO %s", sqlescape.Identifier(role), name))
 	}
 	for _, db := range sortedKeys(u.GrantsByDatabase) {
+		if !sqlescape.IsValidIdentifier(db) {
+			return nil, fmt.Errorf("userstate: invalid database name %q", db)
+		}
+		dbIdent := sqlescape.Identifier(db)
 		grants := u.GrantsByDatabase[db]
 		for _, g := range sorted(grants) {
-			stmts = append(stmts, fmt.Sprintf("GRANT %s ON DATABASE %q TO %q", g, db, u.Name))
+			// Privilege names are restricted to a small enumerated set, but
+			// validate as identifiers regardless to keep the same defence
+			// in depth as user/database names.
+			if !sqlescape.IsValidIdentifier(g) {
+				return nil, fmt.Errorf("userstate: invalid privilege %q", g)
+			}
+			stmts = append(stmts, fmt.Sprintf("GRANT %s ON DATABASE %s TO %s", g, dbIdent, name))
 		}
 	}
 	return stmts, nil
 }
 
 // PlanRevoke returns the SQL needed to revoke privileges before a
-// PostgresUser is removed.
+// PostgresUser is removed. Identifiers are escaped via internal/sqlescape
+// so a user-supplied name with embedded quote characters cannot break out
+// of the statement.
 func PlanRevoke(u User) []string {
+	if !sqlescape.IsValidIdentifier(u.Name) {
+		return nil
+	}
+	name := sqlescape.Identifier(u.Name)
 	stmts := []string{}
 	for _, db := range sortedKeys(u.GrantsByDatabase) {
-		stmts = append(stmts, fmt.Sprintf("REVOKE ALL ON DATABASE %q FROM %q", db, u.Name))
+		if !sqlescape.IsValidIdentifier(db) {
+			continue
+		}
+		stmts = append(stmts, fmt.Sprintf("REVOKE ALL ON DATABASE %s FROM %s",
+			sqlescape.Identifier(db), name))
 	}
-	stmts = append(stmts, fmt.Sprintf("REASSIGN OWNED BY %q TO postgres", u.Name))
-	stmts = append(stmts, fmt.Sprintf("DROP OWNED BY %q", u.Name))
-	stmts = append(stmts, fmt.Sprintf("DROP USER IF EXISTS %q", u.Name))
+	stmts = append(stmts, fmt.Sprintf("REASSIGN OWNED BY %s TO postgres", name))
+	stmts = append(stmts, fmt.Sprintf("DROP OWNED BY %s", name))
+	stmts = append(stmts, fmt.Sprintf("DROP USER IF EXISTS %s", name))
 	return stmts
 }
 
