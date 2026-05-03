@@ -46,29 +46,11 @@ jobs:
         run: go mod download
 
       - name: Run unit tests
+        # Excludes ./internal/controller (envtest job) and ./test/e2e (KUTTL).
         run: |
-          go test \
-            ./internal/postgres/... \
-            ./internal/patcher/... \
-            ./internal/events/... \
-            ./internal/metrics/... \
-            ./internal/predicates/... \
-            ./internal/password/... \
-            ./internal/replication/... \
-            ./internal/ha/... \
-            ./internal/upgrade/... \
-            ./internal/certificate/... \
-            ./internal/pgbouncer/... \
-            ./internal/initialize/... \
-            ./internal/workflows/... \
-            ./internal/scheduler/... \
-            ./internal/recovery/... \
-            ./internal/configfile/... \
-            ./internal/network/... \
-            ./internal/statefulset/... \
-            ./internal/store/... \
-            ./api/... \
-            -coverprofile=coverage-unit.out
+          PKGS=$(go list ./... | grep -v 'internal/controller' | grep -v 'test/e2e')
+          go test -coverprofile=coverage-unit.out ${PKGS}
+        shell: bash
 
       - name: Install setup-envtest
         run: go install sigs.k8s.io/controller-runtime/tools/setup-envtest@latest
