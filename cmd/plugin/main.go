@@ -14,19 +14,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// Command kubectl-vigil is a kubectl plugin for interacting with
-// Vigil-managed PostgreSQL clusters.
+// Command kubectl-athos is a kubectl plugin for interacting with
+// Athos-managed PostgreSQL clusters.
 //
 // Install:
 //
-//	go install github.com/Kitio-Tek/vigil-kubernetes/cmd/plugin@latest
-//	mv $(go env GOPATH)/bin/plugin $(go env GOPATH)/bin/kubectl-vigil
+//	go install github.com/Kitio-Tek/athos-kubernetes/cmd/plugin@latest
+//	mv $(go env GOPATH)/bin/plugin $(go env GOPATH)/bin/kubectl-athos
 //
 // Usage:
 //
-//	kubectl vigil status <cluster-name> [-n namespace]
-//	kubectl vigil failover <cluster-name> --to <pod-name> [-n namespace]
-//	kubectl vigil backup <cluster-name> [-n namespace]
+//	kubectl athos status <cluster-name> [-n namespace]
+//	kubectl athos failover <cluster-name> --to <pod-name> [-n namespace]
+//	kubectl athos backup <cluster-name> [-n namespace]
 package main
 
 import (
@@ -67,7 +67,7 @@ func main() {
 	switch cmd {
 	case "status":
 		if len(args) < 2 {
-			fmt.Fprintln(os.Stderr, "usage: kubectl vigil status <cluster-name>")
+			fmt.Fprintln(os.Stderr, "usage: kubectl athos status <cluster-name>")
 			os.Exit(1)
 		}
 		if err := runStatus(args[1]); err != nil {
@@ -92,7 +92,7 @@ func runStatus(clusterName string) error {
 	}
 
 	gvr := schema.GroupVersionResource{
-		Group:    "pg.vigil.io",
+		Group:    "pg.athos.io",
 		Version:  "v1alpha1",
 		Resource: "postgresclusters",
 	}
@@ -127,16 +127,16 @@ func runStatus(clusterName string) error {
 }
 
 func runVersion() {
-	fmt.Printf("kubectl-vigil version 0.1.0\n")
-	fmt.Printf("  PostgreSQL operator: Vigil Kubernetes\n")
-	fmt.Printf("  API group:           pg.vigil.io/v1alpha1\n")
+	fmt.Printf("kubectl-athos version 0.1.0\n")
+	fmt.Printf("  PostgreSQL operator: Athos Kubernetes\n")
+	fmt.Printf("  API group:           pg.athos.io/v1alpha1\n")
 }
 
 func printUsage() {
-	fmt.Println("kubectl-vigil - kubectl plugin for Vigil Kubernetes operator")
+	fmt.Println("kubectl-athos - kubectl plugin for Athos Kubernetes operator")
 	fmt.Println()
 	fmt.Println("Usage:")
-	fmt.Println("  kubectl vigil [flags] <command> [args]")
+	fmt.Println("  kubectl athos [flags] <command> [args]")
 	fmt.Println()
 	fmt.Println("Commands:")
 	fmt.Println("  status <cluster>   Show cluster status and instance counts")
