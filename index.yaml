@@ -2,6 +2,23 @@ apiVersion: v1
 entries:
   athos-kubernetes:
   - apiVersion: v2
+    appVersion: 0.9.0
+    created: "2026-05-13T17:22:16.028836332Z"
+    description: A Kubernetes operator for PostgreSQL lifecycle management
+    digest: 7aeaa2e72a0d50c10ac1afea9c7e715775cbde753d9bf541c287be4f115a6712
+    home: https://github.com/Kitio-Tek/athos-kubernetes
+    keywords:
+    - postgresql
+    - database
+    - operator
+    name: athos-kubernetes
+    sources:
+    - https://github.com/Kitio-Tek/athos-kubernetes
+    type: application
+    urls:
+    - https://github.com/Kitio-Tek/athos-kubernetes/releases/download/helm-v0.9.0/athos-kubernetes-0.9.0.tgz
+    version: 0.9.0
+  - apiVersion: v2
     appVersion: 0.8.0
     created: "2026-05-13T17:00:44.67708667Z"
     description: A Kubernetes operator for PostgreSQL lifecycle management
@@ -18,4 +35,4 @@ entries:
     urls:
     - https://github.com/Kitio-Tek/athos-kubernetes/releases/download/helm-v0.8.1/athos-kubernetes-0.8.1.tgz
     version: 0.8.1
-generated: "2026-05-13T17:00:44.677096144Z"
+generated: "2026-05-13T17:22:16.028848104Z"
