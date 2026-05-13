@@ -1,10 +1,22 @@
 # Charts
 
 The Helm chart in `charts/athos-kubernetes/` is published alongside each
-release and uploaded as a `.tgz` asset on the GitHub Release page.
+release and uploaded as a `.tgz` asset on the GitHub Release page. The
+rolling chart museum is hosted on the `gh-pages` branch and is available at:
+
+```bash
+helm repo add athos https://kitio-tek.github.io/athos-kubernetes
+helm repo update
+helm search repo athos
+```
+
+Chart releases are tagged `helm-v<version>` and marked as pre-releases on
+GitHub so that the operator's `v0.x.y` releases remain the user-facing
+Latest entry.
 
 | Chart version | Operator version | Min Kubernetes | Notes |
 |---|---|---|---|
+| 0.8.1 | 0.8.0 | 1.25 | First chart-museum publish via gh-pages |
 | 0.8.0 | 0.8.0 | 1.25 | Security hardening, sqlescape coverage |
 | 0.7.0 | 0.7.0 | 1.25 | govulncheck wired in CI, PDB verbs widened |
 | 0.6.0 | 0.6.0 | 1.25 | Backup robustness fixes |
