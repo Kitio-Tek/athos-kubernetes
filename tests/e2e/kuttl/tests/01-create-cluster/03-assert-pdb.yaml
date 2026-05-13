@@ -1,5 +1,5 @@
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: e2e-cluster
+  name: e2e-cluster-pdb
   namespace: default
