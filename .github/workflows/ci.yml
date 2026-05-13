@@ -28,10 +28,9 @@ jobs:
         run: make verify-fmt
 
       - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@v6
+        uses: golangci/golangci-lint-action@v8
         with:
-          version: v1.64.8
-          args: --timeout 5m --allow-parallel-runners
+          version: v2.12.2
 
   test:
     name: Unit and Integration Tests
@@ -86,7 +85,7 @@ jobs:
           cache: true
 
       - name: Install controller-gen
-        run: GOBIN=$(pwd)/bin go install sigs.k8s.io/controller-tools/cmd/controller-gen@v0.15.0
+        run: GOBIN=$(pwd)/bin go install sigs.k8s.io/controller-tools/cmd/controller-gen@v0.18.0
 
       - name: Generate and verify
         run: |
@@ -134,7 +133,7 @@ jobs:
 
       - name: Install CRDs
         run: |
-          GOBIN=$(pwd)/bin go install sigs.k8s.io/controller-tools/cmd/controller-gen@v0.15.0
+          GOBIN=$(pwd)/bin go install sigs.k8s.io/controller-tools/cmd/controller-gen@v0.18.0
           export PATH=$PATH:$(pwd)/bin
           make manifests
           kubectl apply -f config/crd/bases/
