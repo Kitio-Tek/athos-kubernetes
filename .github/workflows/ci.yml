@@ -130,20 +130,23 @@ jobs:
           docker build -t ghcr.io/kitio-tek/athos-kubernetes:latest .
           kind load docker-image ghcr.io/kitio-tek/athos-kubernetes:latest --name athos-kubernetes-e2e
 
-      - name: Install CRDs
+      - name: Regenerate manifests
         run: |
           GOBIN=$(pwd)/bin go install sigs.k8s.io/controller-tools/cmd/controller-gen@v0.18.0
           export PATH=$PATH:$(pwd)/bin
           make manifests
-          kubectl apply -f config/crd/bases/
 
       - name: Deploy operator
+        # Let Helm own the CRDs so its release labels do not collide with a
+        # separately-applied set via kubectl apply.
         run: |
           helm install athos-kubernetes charts/athos-kubernetes/ \
             --namespace athos-system \
             --create-namespace \
             --set image.repository=ghcr.io/kitio-tek/athos-kubernetes \
-            --set image.tag=latest
+            --set image.tag=latest \
+            --set image.pullPolicy=IfNotPresent \
+            --wait --timeout 5m
 
       - name: Run KUTTL tests
         run: |
