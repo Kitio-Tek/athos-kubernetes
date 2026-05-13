@@ -78,6 +78,40 @@ Fixes #<issue-number>
 Scopes include: `api`, `controller`, `internal`, `webhook`, `test`, `helm`,
 `kuttl`, `ci`, `docs`, `make`.
 
+## End-to-End Tests
+
+Athos ships two parallel e2e suites. Both run on every CI build; new
+scenarios should target Chainsaw first.
+
+- **Chainsaw (default).** `tests/e2e/chainsaw/` — each test is a
+  `apiVersion: chainsaw.kyverno.io/v1alpha1` `Test` resource with declarative
+  `apply` / `assert` / `error` / `cleanup` steps and per-step timeouts.
+  Run locally with:
+
+  ```bash
+  make e2e-test
+  # or
+  chainsaw test --config tests/e2e/chainsaw/.chainsaw.yaml tests/e2e/chainsaw/tests/
+  ```
+
+  Chainsaw replaces the brittle bits of KUTTL: rich list/object assertions,
+  comparison operators (`>`, `<`, …), partial-object matching, and CLI/exec
+  step verification. See
+  [kyverno/chainsaw](https://github.com/kyverno/chainsaw) for the test
+  reference.
+
+- **KUTTL (legacy parity).** `tests/e2e/kuttl/` — each test is a numbered
+  directory with `NN-<name>.yaml` apply files paired with `NN-assert.yaml`
+  expected-state files. Kept for parity with the historical Athos test
+  harness while we migrate every scenario into Chainsaw. Run locally with:
+
+  ```bash
+  make e2e-test-kuttl
+  ```
+
+When adding a new e2e scenario, port it to Chainsaw and drop the equivalent
+KUTTL case in the same PR if the coverage now lives only in Chainsaw.
+
 ## Documentation
 
 Update the relevant documentation when changing public APIs or operator behaviour:
