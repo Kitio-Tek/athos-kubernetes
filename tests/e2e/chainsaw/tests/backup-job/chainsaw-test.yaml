@@ -1,0 +1,52 @@
+apiVersion: chainsaw.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: backup-job
+spec:
+  description: |
+    Apply a PostgresCluster and a basebackup PostgresBackup, then assert
+    the operator spawns a Kubernetes Job labelled with pg.athos.io/backup
+    pointing back at the backup CR.
+  steps:
+    - name: create-cluster
+      try:
+        - apply:
+            resource:
+              apiVersion: pg.athos.io/v1alpha1
+              kind: PostgresCluster
+              metadata:
+                name: bkp-cluster
+              spec:
+                postgresVersion: 16
+                instances: 1
+                storage:
+                  size: 1Gi
+    - name: assert-cluster-services
+      try:
+        - assert:
+            resource:
+              apiVersion: v1
+              kind: Service
+              metadata:
+                name: bkp-cluster-primary
+    - name: create-backup
+      try:
+        - apply:
+            resource:
+              apiVersion: pg.athos.io/v1alpha1
+              kind: PostgresBackup
+              metadata:
+                name: nightly
+              spec:
+                clusterName: bkp-cluster
+                method: basebackup
+                online: true
+    - name: assert-job-created
+      try:
+        - assert:
+            resource:
+              apiVersion: batch/v1
+              kind: Job
+              metadata:
+                labels:
+                  pg.athos.io/backup: nightly

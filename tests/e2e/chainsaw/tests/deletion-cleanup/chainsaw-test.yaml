@@ -1,0 +1,58 @@
+apiVersion: chainsaw.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: deletion-cleanup
+spec:
+  description: |
+    Create a cluster, delete it, and assert the operator's finalizer drove
+    cleanup of all owned resources (StatefulSet, Services, Secret, PDB).
+    Uses Chainsaw's error step to assert resources are gone.
+  steps:
+    - name: create-cluster
+      try:
+        - apply:
+            resource:
+              apiVersion: pg.athos.io/v1alpha1
+              kind: PostgresCluster
+              metadata:
+                name: ephemeral
+              spec:
+                postgresVersion: 16
+                instances: 1
+                storage:
+                  size: 1Gi
+    - name: assert-managed-statefulset
+      try:
+        - assert:
+            resource:
+              apiVersion: apps/v1
+              kind: StatefulSet
+              metadata:
+                name: ephemeral
+    - name: delete-cluster
+      try:
+        - delete:
+            ref:
+              apiVersion: pg.athos.io/v1alpha1
+              kind: PostgresCluster
+              name: ephemeral
+    - name: assert-resources-gone
+      try:
+        - error:
+            resource:
+              apiVersion: apps/v1
+              kind: StatefulSet
+              metadata:
+                name: ephemeral
+        - error:
+            resource:
+              apiVersion: v1
+              kind: Service
+              metadata:
+                name: ephemeral-primary
+        - error:
+            resource:
+              apiVersion: policy/v1
+              kind: PodDisruptionBudget
+              metadata:
+                name: ephemeral-pdb

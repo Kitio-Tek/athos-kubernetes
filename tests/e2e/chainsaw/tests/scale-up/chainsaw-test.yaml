@@ -1,0 +1,55 @@
+apiVersion: chainsaw.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: scale-up
+spec:
+  description: |
+    Create a 1-instance cluster, patch it to 3 instances, and assert the
+    StatefulSet's spec.replicas tracks the update.
+  steps:
+    - name: create-single-instance
+      try:
+        - apply:
+            resource:
+              apiVersion: pg.athos.io/v1alpha1
+              kind: PostgresCluster
+              metadata:
+                name: scale
+              spec:
+                postgresVersion: 16
+                instances: 1
+                storage:
+                  size: 1Gi
+    - name: assert-single-replica
+      try:
+        - assert:
+            resource:
+              apiVersion: apps/v1
+              kind: StatefulSet
+              metadata:
+                name: scale
+              spec:
+                replicas: 1
+    - name: scale-to-three
+      try:
+        - apply:
+            resource:
+              apiVersion: pg.athos.io/v1alpha1
+              kind: PostgresCluster
+              metadata:
+                name: scale
+              spec:
+                postgresVersion: 16
+                instances: 3
+                storage:
+                  size: 1Gi
+    - name: assert-three-replicas
+      try:
+        - assert:
+            resource:
+              apiVersion: apps/v1
+              kind: StatefulSet
+              metadata:
+                name: scale
+              spec:
+                replicas: 3
