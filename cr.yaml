@@ -4,4 +4,4 @@
 # so that the operator's Latest tag (v0.8.0, v0.9.0 ...) is not displaced
 # every time the chart museum is republished.
 
-release-name-template: "chart-{{ .Name }}-{{ .Version }}"
+release-name-template: "helm-v{{ .Version }}"
