@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: app-user-password
+  namespace: default
+type: Opaque
+stringData:
+  password: changeme-rotate-in-production
+---
+apiVersion: pg.athos.io/v1alpha1
+kind: PostgresUser
+metadata:
+  name: app-user
+  namespace: default
+spec:
+  clusterName: example-cluster
+  passwordSecret:
+    name: app-user-password
+  databases:
+    - name: appdb
+      privileges:
+        - CONNECT
+        - TEMPORARY
+  schemas:
+    - name: public
+      privileges:
+        - USAGE
+        - CREATE
+  connectionLimit: 100

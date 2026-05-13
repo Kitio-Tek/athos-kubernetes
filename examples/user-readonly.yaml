@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: readonly-user-password
+  namespace: default
+type: Opaque
+stringData:
+  password: changeme-rotate-in-production
+---
+apiVersion: pg.athos.io/v1alpha1
+kind: PostgresUser
+metadata:
+  name: analytics-readonly
+  namespace: default
+spec:
+  clusterName: example-cluster
+  passwordSecret:
+    name: readonly-user-password
+  databases:
+    - name: appdb
+      privileges:
+        - CONNECT
+  schemas:
+    - name: public
+      privileges:
+        - USAGE
+  roles:
+    - pg_read_all_data
+  connectionLimit: 20
