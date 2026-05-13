@@ -131,36 +131,38 @@ func (r *PostgresClusterReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 		}
 	}
 
-	// Reconcile sub-resources in dependency order.
-	if err := r.reconcileServiceAccount(ctx, cluster); err != nil {
-		return ctrl.Result{}, fmt.Errorf("reconcile serviceaccount: %w", err)
-	}
-
-	if err := r.reconcileCredentials(ctx, cluster); err != nil {
-		return ctrl.Result{}, fmt.Errorf("reconcile credentials: %w", err)
-	}
-
-	if err := r.reconcileConfigMap(ctx, cluster); err != nil {
-		return ctrl.Result{}, fmt.Errorf("reconcile configmap: %w", err)
-	}
-
-	if err := r.reconcileStatefulSet(ctx, cluster); err != nil {
-		return ctrl.Result{}, fmt.Errorf("reconcile statefulset: %w", err)
-	}
-
-	if err := r.reconcileServices(ctx, cluster); err != nil {
-		return ctrl.Result{}, fmt.Errorf("reconcile services: %w", err)
-	}
-
-	if err := r.reconcilePDB(ctx, cluster); err != nil {
-		return ctrl.Result{}, fmt.Errorf("reconcile pdb: %w", err)
-	}
-
-	if err := r.updateStatus(ctx, cluster); err != nil {
-		return ctrl.Result{}, fmt.Errorf("update status: %w", err)
+	if err := r.reconcileSubresources(ctx, cluster); err != nil {
+		return ctrl.Result{}, err
 	}
 
 	return ctrl.Result{RequeueAfter: 30 * time.Second}, nil
+}
+
+// reconcileSubresources drives the per-cluster Kubernetes objects toward the
+// state required by the spec. Pulling the sequence out of Reconcile keeps the
+// outer function's cyclomatic complexity within the project budget.
+func (r *PostgresClusterReconciler) reconcileSubresources(
+	ctx context.Context,
+	cluster *pgv1alpha1.PostgresCluster,
+) error {
+	steps := []struct {
+		name string
+		fn   func(context.Context, *pgv1alpha1.PostgresCluster) error
+	}{
+		{"serviceaccount", r.reconcileServiceAccount},
+		{"credentials", r.reconcileCredentials},
+		{"configmap", r.reconcileConfigMap},
+		{"statefulset", r.reconcileStatefulSet},
+		{"services", r.reconcileServices},
+		{"pdb", r.reconcilePDB},
+		{"status", r.updateStatus},
+	}
+	for _, step := range steps {
+		if err := step.fn(ctx, cluster); err != nil {
+			return fmt.Errorf("reconcile %s: %w", step.name, err)
+		}
+	}
+	return nil
 }
 
 // reconcileDelete performs cleanup of cluster-owned resources and removes the
