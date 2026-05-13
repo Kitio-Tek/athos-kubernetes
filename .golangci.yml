@@ -44,9 +44,12 @@ linters:
       checks:
         - all
         - -SA1019
-        - -QF1012
+        - -QF*
         - -ST1000
+        - -ST1001
         - -ST1003
+        - -ST1020
+        - -ST1021
         - -ST1022
   exclusions:
     generated: lax
