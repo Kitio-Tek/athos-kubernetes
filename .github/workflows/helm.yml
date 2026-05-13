@@ -1,0 +1,28 @@
+name: Helm
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "charts/**"
+      - ".github/workflows/helm.yml"
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "charts/**"
+
+permissions:
+  contents: read
+
+jobs:
+  helm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/setup-helm@v4
+        with:
+          version: v3.14.4
+      - name: Lint chart
+        run: helm lint charts/athos-kubernetes
+      - name: Render with default values
+        run: helm template athos charts/athos-kubernetes --namespace athos-system | head -50
