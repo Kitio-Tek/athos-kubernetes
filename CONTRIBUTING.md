@@ -87,6 +87,22 @@ Update the relevant documentation when changing public APIs or operator behaviou
 - Architecture and workflow changes belong in `DEVELOPER.md`
 - User-facing feature additions belong in `README.md`
 
+## Notification preferences
+
+GitHub emails repository watchers when an Actions run on a default branch
+fails. If you are a maintainer working on a feature branch and would rather
+not receive a failure email for every red push to `main`, configure your
+personal notification preferences:
+
+1. Open <https://github.com/settings/notifications>.
+2. Under *Actions*, uncheck *Send notifications for failed workflows only
+   for workflows personally triggered* (or untick the email channel
+   entirely).
+3. Optionally, set this repository to *Custom* watch and uncheck *Actions*.
+
+This is a personal setting; no change in this repository can disable the
+notifications for everyone, because some watchers want them.
+
 ## License
 
 By contributing to Athos, you agree that your contributions will be licensed
