@@ -117,5 +117,5 @@ func SafeInt32(port int) int32 {
 	if port < 0 || port > 65535 {
 		return 0
 	}
-	return int32(port) //#nosec G115 -- bounded by guard above
+	return int32(port) // #nosec G115 -- bounded by guard above
 }
