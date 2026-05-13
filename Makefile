@@ -192,6 +192,31 @@ e2e-test: ## Run KUTTL end-to-end tests against the current kubectl context.
 .PHONY: run-local
 run-local: install run ## Install CRDs and run the operator locally.
 
+##@ Security
+
+.PHONY: security
+security: govulncheck gosec ## Run all security scans (govulncheck and gosec).
+
+.PHONY: govulncheck
+govulncheck: ## Scan source and dependencies for known Go vulnerabilities.
+	@command -v govulncheck >/dev/null 2>&1 || go install golang.org/x/vuln/cmd/govulncheck@latest
+	govulncheck ./...
+
+.PHONY: gosec
+gosec: ## Run gosec static analysis against the codebase.
+	@command -v gosec >/dev/null 2>&1 || go install github.com/securego/gosec/v2/cmd/gosec@latest
+	gosec -exclude-dir=test -exclude-dir=tests -exclude-dir=hack -exclude-generated ./...
+
+.PHONY: gitleaks
+gitleaks: ## Scan the working tree and git history for committed secrets.
+	@command -v gitleaks >/dev/null 2>&1 || (echo "gitleaks not installed: https://github.com/gitleaks/gitleaks" && exit 1)
+	gitleaks detect --redact --config=.gitleaks.toml --no-banner
+
+.PHONY: trivy-fs
+trivy-fs: ## Scan the filesystem for vulnerable dependencies.
+	@command -v trivy >/dev/null 2>&1 || (echo "trivy not installed: https://aquasecurity.github.io/trivy" && exit 1)
+	trivy fs --severity CRITICAL,HIGH --ignore-unfixed .
+
 ##@ Build
 
 VERSION_PKG = github.com/Kitio-Tek/athos-kubernetes/internal/version
