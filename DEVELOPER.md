@@ -5,12 +5,15 @@ running tests, and debugging locally.
 
 ## Prerequisites
 
-- Go 1.22 or later
+- Go 1.25 or later
 - Docker or Podman
 - kubectl
 - Helm 3.x
 - kind (for local cluster testing)
 - operator-sdk v1.38.0
+- controller-gen v0.18.0 (installed via `make controller-gen`)
+- golangci-lint v2.x (installed automatically by the CI action; locally
+  install with `go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.12.2`)
 
 ## Repository Structure
 
