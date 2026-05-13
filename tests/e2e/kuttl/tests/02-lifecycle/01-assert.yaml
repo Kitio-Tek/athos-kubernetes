@@ -1,32 +1,6 @@
-apiVersion: apps/v1
-kind: StatefulSet
+apiVersion: pg.athos.io/v1alpha1
+kind: PostgresCluster
 metadata:
   name: lifecycle
 status:
-  replicas: 1
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: lifecycle-primary
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: lifecycle-replicas
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: lifecycle-pods
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: lifecycle-credentials
-type: Opaque
----
-apiVersion: policy/v1
-kind: PodDisruptionBudget
-metadata:
-  name: lifecycle-pdb
+  phase: Paused

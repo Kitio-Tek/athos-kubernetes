@@ -1,6 +1,0 @@
-apiVersion: pg.athos.io/v1alpha1
-kind: PostgresCluster
-metadata:
-  name: lifecycle
-status:
-  phase: Paused

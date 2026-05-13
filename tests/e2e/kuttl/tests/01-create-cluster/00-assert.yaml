@@ -23,3 +23,16 @@ kind: Service
 metadata:
   name: e2e-cluster-pods
   namespace: default
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: e2e-cluster-credentials
+  namespace: default
+type: Opaque
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: e2e-cluster-pdb
+  namespace: default
