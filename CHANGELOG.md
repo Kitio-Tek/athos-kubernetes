@@ -6,6 +6,48 @@ and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- Community and governance docs: `SECURITY.md`, `CODE_OF_CONDUCT.md`,
+  `DCO.md`, `GOVERNANCE.md`, `MAINTAINERS.md`, `SUPPORT.md`,
+  `SUPPORTED_VERSIONS.md`, `HARDENING.md`, `CHARTS.md`.
+- `examples/` directory with ready-to-apply samples for `PostgresCluster`,
+  `PostgresBackup`, and `PostgresUser` (basic, HA, TLS, user-app,
+  user-readonly).
+- Security workflows: Gitleaks secret scan, CodeQL Go analysis, Trivy
+  filesystem and image scans, dedicated Security workflow running
+  govulncheck and gosec with SARIF upload, `.gitleaks.toml`.
+- CI side workflows: Helm chart lint, PR labeler, stale issue/PR
+  reaper, auto-assign reviewer.
+- `helm-release.yml` workflow publishing the chart to a `gh-pages`
+  chart museum via `helm/chart-releaser-action`, with chart releases
+  namespaced under `chart-<name>-<version>` to preserve operator
+  release naming.
+- README badges for Security, CodeQL, Trivy, pkg.go.dev. Quick start,
+  testing matrix, security, roadmap and project maturity sections
+  mirroring `vertica/vertica-kubernetes` style.
+- Issue templates for documentation gaps and security questions.
+- `.github/CODEOWNERS`, `.github/labeler.yml`, `.github/auto-assign.yml`.
+- `Makefile` targets: `security`, `govulncheck`, `gosec`, `gitleaks`,
+  `trivy-fs`.
+- Fuzz tests for `internal/sqlescape` (Identifier, StringLiteral,
+  IsValidIdentifier) and table + fuzz tests for the PostgresUser
+  controller's `redactPassword` helper.
+
+### Changed
+
+- Dependencies bumped to clear Trivy CRITICAL/HIGH findings:
+  `github.com/moby/spdystream` 0.2.0 -> 0.5.1,
+  `golang.org/x/oauth2` 0.12.0 -> 0.34.0,
+  `google.golang.org/grpc` 1.58.3 -> 1.79.3,
+  `go.opentelemetry.io/otel/sdk` 1.19.0 -> 1.43.0.
+- `go.mod` minimum Go bumped to 1.25.0; CI `GO_VERSION` to 1.25.10;
+  builder image to `golang:1.25`.
+- `controller-gen` bumped to v0.18.0; CRDs and ClusterRole regenerated.
+- `golangci-lint` migrated to v2 with `golangci-lint-action@v8`;
+  `.golangci.yml` rewritten to the v2 schema with tuned `goconst` and
+  `staticcheck` settings.
+
 ## [0.8.0] - 2026-05-07
 
 ### Fixed
