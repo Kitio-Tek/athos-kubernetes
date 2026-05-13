@@ -53,30 +53,21 @@ func ParseDuration(s string) (time.Duration, error) {
 	if d, err := time.ParseDuration(s); err == nil {
 		return d, nil
 	}
+	return parseExtendedDuration(s)
+}
 
-	var total time.Duration
-	var numStart int
-	var sawAny bool
+func parseExtendedDuration(s string) (time.Duration, error) {
+	var (
+		total    time.Duration
+		numStart int
+		sawAny   bool
+	)
 	for i := 0; i < len(s); i++ {
-		c := s[i]
-		if (c >= '0' && c <= '9') || c == '.' || (c == '-' && i == numStart) {
+		if isNumberByte(s[i], i == numStart) {
 			continue
 		}
-		// We hit a unit character; collect it (single or multi-char).
-		unitEnd := i
-		for unitEnd < len(s) {
-			b := s[unitEnd]
-			if (b >= '0' && b <= '9') || b == '.' || b == '-' {
-				break
-			}
-			unitEnd++
-		}
-		num := s[numStart:i]
-		unit := s[i:unitEnd]
-		if num == "" {
-			return 0, fmt.Errorf("%w: missing number before %q", ErrInvalidDuration, unit)
-		}
-		seg, err := parseSegment(num, unit)
+		unitEnd := scanUnitEnd(s, i)
+		seg, err := decodeSegment(s[numStart:i], s[i:unitEnd])
 		if err != nil {
 			return 0, err
 		}
@@ -89,6 +80,29 @@ func ParseDuration(s string) (time.Duration, error) {
 		return 0, fmt.Errorf("%w: %q", ErrInvalidDuration, s)
 	}
 	return total, nil
+}
+
+func isNumberByte(c byte, atStart bool) bool {
+	return (c >= '0' && c <= '9') || c == '.' || (c == '-' && atStart)
+}
+
+func scanUnitEnd(s string, start int) int {
+	unitEnd := start
+	for unitEnd < len(s) {
+		b := s[unitEnd]
+		if (b >= '0' && b <= '9') || b == '.' || b == '-' {
+			break
+		}
+		unitEnd++
+	}
+	return unitEnd
+}
+
+func decodeSegment(num, unit string) (time.Duration, error) {
+	if num == "" {
+		return 0, fmt.Errorf("%w: missing number before %q", ErrInvalidDuration, unit)
+	}
+	return parseSegment(num, unit)
 }
 
 func parseSegment(num, unit string) (time.Duration, error) {
