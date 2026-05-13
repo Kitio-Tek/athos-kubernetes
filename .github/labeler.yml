@@ -1,0 +1,39 @@
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "docs/**"
+          - "**/*.md"
+go:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/*.go"
+          - "go.mod"
+          - "go.sum"
+ci:
+  - changed-files:
+      - any-glob-to-any-file:
+          - ".github/workflows/**"
+helm:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "charts/**"
+api:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "api/**"
+controller:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "internal/controller/**"
+tests:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/*_test.go"
+          - "tests/**"
+          - "test/**"
+security:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "SECURITY.md"
+          - "HARDENING.md"
+          - "internal/sqlescape/**"
