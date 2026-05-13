@@ -1,0 +1,51 @@
+# gitleaks configuration for Athos Kubernetes.
+# Inherits the default rule set (private keys, AWS, GCP, GitHub tokens, etc.)
+# and adds project-specific rules.
+
+[extend]
+# Use the bundled default rules as a base.
+useDefault = true
+
+[[rules]]
+id = "kubeconfig-client-key"
+description = "Kubeconfig embedded client-key-data (base64 PEM)"
+regex = '''(?i)client-key-data:\s*[A-Za-z0-9+/=]{100,}'''
+keywords = ["client-key-data"]
+tags = ["kubeconfig", "secret"]
+
+[[rules]]
+id = "kubeconfig-client-cert"
+description = "Kubeconfig embedded client-certificate-data (base64 PEM)"
+regex = '''(?i)client-certificate-data:\s*[A-Za-z0-9+/=]{100,}'''
+keywords = ["client-certificate-data"]
+tags = ["kubeconfig", "credential"]
+
+[[rules]]
+id = "kubeconfig-token"
+description = "Kubeconfig embedded user token"
+regex = '''(?i)\btoken:\s*[A-Za-z0-9._-]{20,}'''
+keywords = ["token:"]
+tags = ["kubeconfig", "secret"]
+
+[[rules]]
+id = "postgres-uri"
+description = "PostgreSQL connection URI with embedded credentials"
+regex = '''postgres(?:ql)?://[^:\s]+:[^@\s]+@[^/\s]+'''
+keywords = ["postgres://", "postgresql://"]
+tags = ["postgres", "credential"]
+
+[allowlist]
+description = "Paths and known false positives that gitleaks must ignore."
+paths = [
+  '''(?i)go\.sum$''',
+  '''(?i)go\.mod$''',
+  '''(?i)vendor/''',
+  '''(?i)\.git/''',
+  '''(?i)bin/''',
+  '''(?i)dist/''',
+  '''(?i)testdata/''',
+]
+regexes = [
+  # The samples ship illustrative example passwords like "examplepassword".
+  '''postgres://postgres:examplepassword@''',
+]
