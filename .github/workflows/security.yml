@@ -48,6 +48,9 @@ jobs:
   gosec:
     name: gosec
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write    
     steps:
       - uses: actions/checkout@v4
 
