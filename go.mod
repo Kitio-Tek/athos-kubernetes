@@ -2,8 +2,6 @@ module github.com/Kitio-Tek/athos-kubernetes
 
 go 1.26.4
 
-
-
 require (
 	github.com/onsi/ginkgo/v2 v2.17.1
 	github.com/onsi/gomega v1.32.0
